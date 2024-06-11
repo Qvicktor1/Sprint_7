@@ -35,6 +35,7 @@ class TestCourierLogin:
         del payload[missing_field]
         response = requests.post(f'{url}/api/v1/courier/login', data=payload)
         assert response.status_code == 400, f'Instead of an error code 400 received code {response.status_code}'
+        assert response.json()["message"] == "Недостаточно данных для входа", f'Error message contains wrong text'
 
     @allure.title('Test of failed attempt to login with the wrong fields')
     @allure.description('Negative test of the endpoint "Логин курьера в системе" POST /api/v1/courier/login.'
@@ -50,3 +51,4 @@ class TestCourierLogin:
         payload[wrong_field] = f'{payload[wrong_field]}a'
         response = requests.post(f'{url}/api/v1/courier/login', data=payload)
         assert response.status_code == 404, f'Instead of an error code 404 received code {response.status_code}'
+        assert response.json()["message"] == "Учетная запись не найдена", f'Error message contains wrong text'

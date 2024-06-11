@@ -28,6 +28,7 @@ class TestCourierCreation:
         }
         response = requests.post(f'{url}/api/v1/courier', data=repeating_courier_payload)
         assert response.status_code == 409, f'Instead of an error code 409 received code {response.status_code}'
+        assert response.json()["message"] == "Этот логин уже используется", f'Error message contains wrong text'
 
     @allure.title('Test of failed attempt to create a courier with missing fields')
     @allure.description('Negative test of the endpoint "Создание курьера" POST /api/v1/courier.'
@@ -37,6 +38,8 @@ class TestCourierCreation:
     def test_creation_with_any_missing_field_failed(self, payload):
         response = requests.post(f'{url}/api/v1/courier', data=payload)
         assert response.status_code == 400, f'Instead of an error code 400 received code {response.status_code}'
+        assert response.json()["message"] == "Недостаточно данных для создания учетной записи", \
+            f'Error message contains wrong text'
 
     @allure.title('Test of failed attempt to create a courier with repeating login')
     @allure.description('Negative test of the endpoint "Создание курьера" POST /api/v1/courier.'
@@ -50,3 +53,4 @@ class TestCourierCreation:
         print(repeating_login_payload)
         response = requests.post(f'{url}/api/v1/courier', data=repeating_login_payload)
         assert response.status_code == 409, f'Instead of an error code 409 received code {response.status_code}'
+        assert response.json()["message"] == "Этот логин уже используется", f'Error message contains wrong text'
